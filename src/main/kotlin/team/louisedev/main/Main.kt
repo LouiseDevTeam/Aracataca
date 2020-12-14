@@ -2,23 +2,46 @@ package team.louisedev.main
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.alsoLogin
-import net.mamoe.mirai.event.subscribeMessages
-import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.subscribeFriendMessages
 import net.mamoe.mirai.event.subscribeGroupMessages
+import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.join
-import net.mamoe.mirai.message.data.MessageChainBuilder
-import net.mamoe.mirai.message.data.id
+import net.mamoe.mirai.message.data.At
+import java.util.*
+import javax.mail.*
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 suspend fun main(args: Array<String>){
-    if(args.size % 2 != 0){
+        var properties = System.getProperties()
+        properties.setProperty("mail.smtp.host","smtp.exmail.qq.com")
+        properties.put("mail.smtp.auth","true")
+        var session = Session.getDefaultInstance(properties)
+        var message = MimeMessage(session)
+        message.setFrom(InternetAddress("i@pixiv.world"))
+        message.setRecipient(Message.RecipientType.TO, InternetAddress("app@pixiv.world"))
+
+        message.setSubject("This is a test")
+        message.setText("For test only")
+        message.saveChanges()
+
+        var transport = session.getTransport()
+        transport.connect("i@pixiv.world","pwd")
+        transport.sendMessage(message,message.allRecipients)
+        transport.close()
+
+
+/*    if(args.size % 2 != 0){
         print("Error: Wrong args")
         return
     }
 
+
+
     var qqID  = 0L
     var password  = String()
+    var port = 6666
 
     val end = args.size - 1
     for(i in 0 .. end step 2){
@@ -38,7 +61,6 @@ suspend fun main(args: Array<String>){
             reply("Boss Xi Great!")
         }
     }
-
     bot.subscribeFriendMessages {
         always {
             print(this.message.contentToString())
@@ -59,5 +81,5 @@ suspend fun main(args: Array<String>){
             print(this.group.id)
         }
     }
-    bot.join()
+    bot.join()*/
 }
