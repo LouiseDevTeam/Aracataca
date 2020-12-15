@@ -3,9 +3,9 @@ package team.louisedev.message
 data class Message(val id : Long,
                     val nick : String,
                     val message : String,
-                    val time : Int){
+                    val time : String){
 
     override fun toString() : String{
-        return "$id($nick):says $message at $time"
+        return "$id($nick)說：$message 在 $time"
     }
 }

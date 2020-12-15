@@ -10,10 +10,12 @@ import net.mamoe.mirai.join
 import net.mamoe.mirai.message.data.At
 import team.louisedev.mail.Mail
 import team.louisedev.message.Message
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
+import kotlin.collections.ArrayList
 
 suspend fun main(args: Array<String>){
     if(args.size % 2 != 0){
@@ -52,6 +54,7 @@ suspend fun main(args: Array<String>){
         }
     }
  */
+    var messages = ArrayList<Message>()
     bot.subscribeFriendMessages {
         always {
             /*print(this.message.contentToString())
@@ -62,13 +65,26 @@ suspend fun main(args: Array<String>){
             print(this.senderName)
 
              */
-            mail.sendMail(smtpUsername,mailUsername,"你收到一个好友消息",
-                Message(this.sender.id,
-                        this.senderName,
-                        this.message.contentToString(),
-                        this.time).toString())
+
+            messages.add(Message(this.sender.id,
+                this.senderName,
+                this.message.contentToString(),
+                SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(1000L * this.time))))
         }
     }
+    Thread{
+        Timer().schedule(object:TimerTask(){
+            override fun run() {
+                //println("Hello World!")
+                var delta = String()
+                for( i in messages){
+                    delta += i.toString() + "\n"
+                }
+                mail.sendMail(smtpUsername,mailUsername,"你收到${messages.size}條聯絡人訊息",delta)
+                messages.clear()
+            }
+        }, Date(), 1800 * 1000)
+    }.start()
 
 /*    bot.subscribeGroupMessages {
         always {
