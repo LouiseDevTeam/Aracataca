@@ -41,7 +41,9 @@ suspend fun main(args: Array<String>){
     }
 
     var mail = Mail(smtpUsername,smtpPassword,smtpHost)
-    var bot = Bot(qqID, password).alsoLogin()
+    var bot = Bot(qqID, password) {
+        fileBasedDeviceInfo("device.json")
+    }.alsoLogin()
 
 /*    bot.subscribeMessages {
         "Hello, Kotlin" reply "Hello, Kotlin"

@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
     }
     dependencies {
@@ -17,7 +18,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
 group 'team.louisedev'
-version '0.1-beta'
+version '0.1-beta.2'
 
 repositories {
     maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
@@ -43,7 +44,7 @@ shadowJar {
     // 生成包的命名规则： baseName-version-classifier.jar
     manifest {
         attributes(
-                'Main-Class': 'net.mamoe.mirai.simpleloader.MyLoaderKt'//入口点
+                'Main-Class': 'team.louisedev.main.MainKt'//入口点
         )
     }
 
