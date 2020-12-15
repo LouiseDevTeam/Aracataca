@@ -10,4 +10,4 @@ This repo relies on the following third-party projects:
 
 ## License
 
-Macondo is available under the AGPL-3.0 License.
+Aracataca is available under the AGPL-3.0 License.
