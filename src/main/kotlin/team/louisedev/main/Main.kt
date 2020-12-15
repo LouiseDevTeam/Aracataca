@@ -9,6 +9,7 @@ import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.join
 import net.mamoe.mirai.message.data.At
 import team.louisedev.mail.Mail
+import team.louisedev.message.GroupMessage
 import team.louisedev.message.Message
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +19,8 @@ import javax.mail.internet.MimeMessage
 import kotlin.collections.ArrayList
 
 suspend fun main(args: Array<String>){
+    val VERSION = "Louise Dev Team Aracataca 0.1-beta.3"
+
     if(args.size % 2 != 0){
         print("Error: Wrong args")
         return
@@ -45,60 +48,47 @@ suspend fun main(args: Array<String>){
         fileBasedDeviceInfo("device.json")
     }.alsoLogin()
 
-/*    bot.subscribeMessages {
-        "Hello, Kotlin" reply "Hello, Kotlin"
-        case("at me"){
-            reply(At(sender as Member) + "pa!")
-        }
-
-        (contains("tian") or contains("Boss Xi")) {
-            reply("Boss Xi Great!")
-        }
-    }
- */
     var messages = ArrayList<Message>()
+    var groupMessages = ArrayList<GroupMessage>()
     bot.subscribeFriendMessages {
         always {
-            /*print(this.message.contentToString())
-            print(this.time)
-            print(this.sender.id)
-            print(this.sender.nick)
-            print(this.sender.avatarUrl)
-            print(this.senderName)
-
-             */
-
             messages.add(Message(this.sender.id,
                 this.senderName,
                 this.message.contentToString(),
                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(1000L * this.time))))
         }
     }
+
+    bot.subscribeGroupMessages {
+        always {
+            groupMessages.add(
+                GroupMessage(this.sender.id,
+                    if(this.sender.nameCard == "") this.sender.nick else this.sender.nameCard,
+                    this.group.name,
+                    this.message.contentToString(),
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(1000L * this.time)))
+            )
+        }
+    }
+
     Thread{
         Timer().schedule(object:TimerTask(){
             override fun run() {
                 //println("Hello World!")
                 var delta = String()
-                for( i in messages){
+                for(i in messages){
                     delta += i.toString() + "\n"
                 }
-                mail.sendMail(smtpUsername,mailUsername,"你收到${messages.size}條聯絡人訊息",delta)
+                for(i in groupMessages){
+                    delta += i.toString() + "\n"
+                }
+                delta += VERSION + "\n"
+                mail.sendMail(smtpUsername,mailUsername,"你收到${messages.size}條聯絡人訊息及${groupMessages.size}條群組訊息",delta)
                 messages.clear()
+                groupMessages.clear()
             }
         }, Date(), 1800 * 1000)
     }.start()
 
-/*    bot.subscribeGroupMessages {
-        always {
-            print(this.message.contentToString())
-            print(this.sender.id)
-            print(this.sender.nick)
-            print(this.sender.avatarUrl)
-            print(this.senderName)
-            print(this.group.id)
-        }
-    }
-
- */
     bot.join()
 }

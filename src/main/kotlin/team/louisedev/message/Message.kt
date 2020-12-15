@@ -6,6 +6,17 @@ data class Message(val id : Long,
                     val time : String){
 
     override fun toString() : String{
-        return "$id($nick)說：$message 在 $time"
+        return "$id($nick)說：$message 在 $time。"
+    }
+}
+
+data class GroupMessage(val id : Long,
+                   val nick : String,
+                   val groupName : String,
+                   val message : String,
+                   val time : String){
+
+    override fun toString() : String{
+        return "$id($nick)在群組（${groupName}）說：$message 在 $time。"
     }
 }
