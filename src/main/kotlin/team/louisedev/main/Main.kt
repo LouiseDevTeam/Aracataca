@@ -19,7 +19,7 @@ import javax.mail.internet.MimeMessage
 import kotlin.collections.ArrayList
 
 suspend fun main(args: Array<String>){
-    val VERSION = "Louise Dev Team Aracataca 0.1-beta.3"
+    val VERSION = "Louise Dev Team Aracataca 0.1-GM.1"
 
     if(args.size % 2 != 0){
         print("Error: Wrong args")
@@ -74,18 +74,19 @@ suspend fun main(args: Array<String>){
     Thread{
         Timer().schedule(object:TimerTask(){
             override fun run() {
-                //println("Hello World!")
-                var delta = String()
-                for(i in messages){
-                    delta += i.toString() + "\n"
+                if(messages.size > 0 || groupMessages.size > 0){
+                    var delta = String()
+                    for(i in messages){
+                        delta += i.toString() + "\n"
+                    }
+                    for(i in groupMessages){
+                        delta += i.toString() + "\n"
+                    }
+                    delta += VERSION + "\n"
+                    mail.sendMail(smtpUsername,mailUsername,"你收到${messages.size}條聯絡人訊息及${groupMessages.size}條群組訊息",delta)
+                    messages.clear()
+                    groupMessages.clear()
                 }
-                for(i in groupMessages){
-                    delta += i.toString() + "\n"
-                }
-                delta += VERSION + "\n"
-                mail.sendMail(smtpUsername,mailUsername,"你收到${messages.size}條聯絡人訊息及${groupMessages.size}條群組訊息",delta)
-                messages.clear()
-                groupMessages.clear()
             }
         }, Date(), 1800 * 1000)
     }.start()
