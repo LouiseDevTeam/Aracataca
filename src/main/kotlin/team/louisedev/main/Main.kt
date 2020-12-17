@@ -20,6 +20,21 @@ import kotlin.collections.ArrayList
 
 suspend fun main(args: Array<String>){
     val VERSION = "Louise Dev Team Aracataca 0.1-GM.1"
+    val HELP = "${VERSION}\n" +
+                "Usage:\n" +
+                "  -a              QQ ID\n" +
+                "  -p              QQ password\n" +
+                "  -smtp-host      SMTP server\n" +
+                "  -smtp-username  SMTP username\n" +
+                "  -smtp-password  SMTP password\n" +
+                "  -mail-username  Mail to receive\n" +
+                "\nExample:\n" +
+                "java -jar Aracataca-{VERSION}-all.jar -a 10000 -p pwd -smtp-host smtp.exmail.qq.com -smtp-username i@qq.com -smtp-password pwd -mail-username app@qq.com\n"
+
+    if (args.isEmpty()){
+        print(HELP)
+        return
+    }
 
     if(args.size % 2 != 0){
         print("Error: Wrong args")

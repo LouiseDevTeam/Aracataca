@@ -19,6 +19,6 @@ data class GroupMessage(val id : Long,
 
     override fun toString() : String{
         //$id
-        return "$「$nick」在群組（${groupName}）說：「$message」 在 $time。"
+        return "「$nick」在群組（${groupName}）說：「$message」 在 $time。"
     }
 }
