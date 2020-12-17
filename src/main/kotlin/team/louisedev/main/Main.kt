@@ -17,6 +17,7 @@ import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 suspend fun main(args: Array<String>){
     val VERSION = "Louise Dev Team Aracataca 0.1-GM.1"
@@ -65,6 +66,7 @@ suspend fun main(args: Array<String>){
 
     var messages = ArrayList<Message>()
     var groupMessages = ArrayList<GroupMessage>()
+    //var groupNames = HashSet<String>()
     bot.subscribeFriendMessages {
         always {
             messages.add(Message(this.sender.id,
@@ -76,6 +78,7 @@ suspend fun main(args: Array<String>){
 
     bot.subscribeGroupMessages {
         always {
+            //groupNames.add(this.group.name)
             groupMessages.add(
                 GroupMessage(this.sender.id,
                     if(this.sender.nameCard == "") this.sender.nick else this.sender.nameCard,
