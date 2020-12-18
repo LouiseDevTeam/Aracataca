@@ -72,7 +72,7 @@ suspend fun main(args: Array<String>){
                 this.sender.id,
                 this.sender.nick,
                 this.message.contentToString(),
-                SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(1000L * this.time))))
+                SimpleDateFormat("HH:mm:ss").format(Date(1000L * this.time))))
         }
     }
 
@@ -84,7 +84,7 @@ suspend fun main(args: Array<String>){
                     this.sender.id,
                     if(this.sender.nameCard == "") this.sender.nick else this.sender.nameCard,
                     this.message.contentToString(),
-                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(1000L * this.time)))
+                    SimpleDateFormat("HH:mm:ss").format(Date(1000L * this.time)))
             )
         }
     }
