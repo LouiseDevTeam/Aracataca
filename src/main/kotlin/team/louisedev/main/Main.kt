@@ -2,20 +2,13 @@ package team.louisedev.main
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.alsoLogin
-import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.subscribeFriendMessages
 import net.mamoe.mirai.event.subscribeGroupMessages
-import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.join
-import net.mamoe.mirai.message.data.At
 import team.louisedev.mail.Mail
-import team.louisedev.message.GroupMessage
 import team.louisedev.message.Message
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.mail.*
-import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeMessage
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
@@ -64,13 +57,20 @@ suspend fun main(args: Array<String>){
         fileBasedDeviceInfo("device.json")
     }.alsoLogin()
 
+
     var messages = ArrayList<Message>()
-    var groupMessages = ArrayList<GroupMessage>()
-    //var groupNames = HashSet<String>()
+    var groupMessages = ArrayList<Message>()
+    var messageChain = emptyMap<String,ArrayList<Message>>().toMutableMap()
+    var groupMessageChain = emptyMap<String,ArrayList<Message>>().toMutableMap()
+    var whereNames = HashSet<String>()
+    var whereGroupNames = HashSet<String>()
+
     bot.subscribeFriendMessages {
         always {
-            messages.add(Message(this.sender.id,
-                this.senderName,
+            whereNames.add(this.sender.id.toString())
+            messages.add(Message(this.sender.id.toString(),
+                this.sender.id,
+                this.sender.nick,
                 this.message.contentToString(),
                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(1000L * this.time))))
         }
@@ -78,11 +78,11 @@ suspend fun main(args: Array<String>){
 
     bot.subscribeGroupMessages {
         always {
-            //groupNames.add(this.group.name)
+            whereGroupNames.add(this.group.name)
             groupMessages.add(
-                GroupMessage(this.sender.id,
+                Message(this.group.name,
+                    this.sender.id,
                     if(this.sender.nameCard == "") this.sender.nick else this.sender.nameCard,
-                    this.group.name,
                     this.message.contentToString(),
                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(1000L * this.time)))
             )
@@ -92,18 +92,47 @@ suspend fun main(args: Array<String>){
     Thread{
         Timer().schedule(object:TimerTask(){
             override fun run() {
-                if(messages.size > 0 || groupMessages.size > 0){
-                    var delta = String()
-                    for(i in messages){
-                        delta += i.toString() + "\n"
+                if(messages.size > 0){
+                    for(i in whereNames){
+                        messageChain[i] = ArrayList()
+                        for (j in messages){
+                            if (j.where == i){
+                                messageChain[i]?.add(j)
+                            }
+                        }
                     }
-                    for(i in groupMessages){
-                        delta += i.toString() + "\n"
+
+                    for (i in whereGroupNames){
+                        groupMessageChain[i] = ArrayList()
+                        for (j in groupMessages){
+                            if (j.where == i){
+                                groupMessageChain[i]?.add(j)
+                            }
+                        }
+                    }
+
+                    var delta = String()
+                    for(i in whereNames){
+                        delta += "聯絡人「$i」\n"
+                        for (j in messageChain[i]!!){
+                            delta += "    " + j.toString() + "\n"
+                        }
+                    }
+                    delta += "\n"
+                    for (i in whereGroupNames){
+                        delta += "群組「$i」\n"
+                        for (j in groupMessageChain[i]!!){
+                            delta += "    " + j.toString() + "\n"
+                        }
                     }
                     delta += VERSION + "\n"
                     mail.sendMail(smtpUsername,mailUsername,"你收到${messages.size}條聯絡人訊息及${groupMessages.size}條群組訊息",delta)
+                    whereNames.clear()
+                    whereGroupNames.clear()
                     messages.clear()
                     groupMessages.clear()
+                    messageChain.clear()
+                    groupMessageChain.clear()
                 }
             }
         }, Date(), 1800 * 1000)

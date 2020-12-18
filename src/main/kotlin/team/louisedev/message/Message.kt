@@ -1,6 +1,7 @@
 package team.louisedev.message
 
-data class Message(val id : Long,
+data class Message(val where : String,
+                    val id : Long,
                     val nick : String,
                     val message : String,
                     val time : String){
@@ -11,7 +12,7 @@ data class Message(val id : Long,
     }
 }
 
-data class GroupMessage(val id : Long,
+/*data class GroupMessage(val id : Long,
                    val nick : String,
                    val groupName : String,
                    val message : String,
@@ -22,3 +23,4 @@ data class GroupMessage(val id : Long,
         return "「$nick」在群組（${groupName}）說：「$message」 在 $time。"
     }
 }
+ */
