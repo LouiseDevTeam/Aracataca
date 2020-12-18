@@ -92,7 +92,7 @@ suspend fun main(args: Array<String>){
     Thread{
         Timer().schedule(object:TimerTask(){
             override fun run() {
-                if(messages.size > 0){
+                if(messages.size > 0 || groupMessages.size > 0){
                     for(i in whereNames){
                         messageChain[i] = ArrayList()
                         for (j in messages){
