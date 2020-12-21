@@ -18,7 +18,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
 group 'team.louisedev'
-version '0.1-GM.1'
+version '0.1'
 
 repositories {
     maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }

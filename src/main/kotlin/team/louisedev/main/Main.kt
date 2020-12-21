@@ -13,7 +13,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 suspend fun main(args: Array<String>){
-    val VERSION = "Louise Dev Team Aracataca 0.1-GM.1"
+    val VERSION = "Louise Dev Team Aracataca 0.1"
     val HELP = "${VERSION}\n" +
                 "Usage:\n" +
                 "  -a              QQ ID\n" +
