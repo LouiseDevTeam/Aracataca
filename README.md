@@ -1,6 +1,6 @@
 ## Aracataca
 
-A program for forwarding QQ messages to email.
+A program for forwarding QQ messages to email (Currently ONLY email).
 
 ## Credits
 
