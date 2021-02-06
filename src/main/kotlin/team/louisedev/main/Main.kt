@@ -1,10 +1,11 @@
 package team.louisedev.main
 
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.BotFactory
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.event.subscribeFriendMessages
 import net.mamoe.mirai.event.subscribeGroupMessages
-import net.mamoe.mirai.join
+//import net.mamoe.mirai.join
 import team.louisedev.mail.Mail
 import team.louisedev.message.Message
 import java.text.SimpleDateFormat
@@ -13,7 +14,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 suspend fun main(args: Array<String>){
-    val VERSION = "Louise Dev Team Aracataca 0.1"
+    val VERSION = "Louise Dev Team Aracataca 0.2"
     val HELP = "${VERSION}\n" +
                 "Usage:\n" +
                 "  -a              QQ ID\n" +
@@ -53,10 +54,11 @@ suspend fun main(args: Array<String>){
     }
 
     var mail = Mail(smtpUsername,smtpPassword,smtpHost)
-    var bot = Bot(qqID, password) {
+    var bot = BotFactory.newBot(qqID, password) {
         fileBasedDeviceInfo("device.json")
-    }.alsoLogin()
+    }
 
+    bot.login()
 
     var messages = ArrayList<Message>()
     var groupMessages = ArrayList<Message>()
@@ -65,7 +67,7 @@ suspend fun main(args: Array<String>){
     var whereNames = HashSet<String>()
     var whereGroupNames = HashSet<String>()
 
-    bot.subscribeFriendMessages {
+    bot.eventChannel.subscribeFriendMessages {
         always {
             whereNames.add(this.sender.id.toString())
             messages.add(Message(this.sender.id.toString(),
@@ -76,7 +78,7 @@ suspend fun main(args: Array<String>){
         }
     }
 
-    bot.subscribeGroupMessages {
+    bot.eventChannel.subscribeGroupMessages {
         always {
             whereGroupNames.add(this.group.name)
             groupMessages.add(
