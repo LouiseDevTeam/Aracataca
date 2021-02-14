@@ -14,7 +14,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 suspend fun main(args: Array<String>){
-    val VERSION = "Louise Dev Team Aracataca 0.2"
+    val VERSION = "Louise Dev Team Aracataca 0.2-beta.2"
     val HELP = "${VERSION}\n" +
                 "Usage:\n" +
                 "  -a              QQ ID\n" +
@@ -123,8 +123,15 @@ suspend fun main(args: Array<String>){
                     delta += "\n"
                     for (i in whereGroupNames){
                         delta += "群組「$i」\n"
+                        var alpha : Message? = null
                         for (j in groupMessageChain[i]!!){
+                            if (alpha != null) {
+                                if (j.id == alpha.id && j.message == alpha.message) {
+                                    continue
+                                }
+                            }
                             delta += "    " + j.toString() + "\n"
+                            alpha = j
                         }
                     }
                     delta += VERSION + "\n"
